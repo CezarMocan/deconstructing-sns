@@ -109,6 +109,16 @@ const recursiveApply = (el, depth, fn, args) => {
 // #5
 // add some large unicode emojis on the screen—ritual related ones
 
+// ------
+// #6
+// in the beginning of the performance (and throughout it,) some elements are pulsating (animate scale)
+
+// #7
+// get colors to more blue&white; less often GIF, or replace GIF with a facebook-like one
+
+// #8 
+// Make progression more gradual / smooth
+
 // one of the characters exploring facebook marketplace while talking in the chat ?
 
 // Sound: https://tonejs.github.io/examples/mixer.html
