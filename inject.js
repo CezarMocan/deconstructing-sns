@@ -78,6 +78,21 @@ const adjustImageOpacity = (d, depth, args) => {
 	d.style['opacity'] = `${args[0]}`
 }
 
+const adjustElementOpacity = (d, depth, args) => {
+	// if (!(d.nodeName.toLowerCase() === 'img')) return
+	if (!d.style) d.style = {}
+	d.style['transition'] = 'opacity 1s'
+	d.style['opacity'] = `${args[0]}`
+}
+
+const adjustDocumentOpacity = (val) => {
+	adjustElementOpacity(document, 0, [val])
+	// // if (!(d.nodeName.toLowerCase() === 'img')) return
+	// if (!d.style) return
+	// d.style['transition'] = 'opacity 1s'
+	// d.style['opacity'] = `${args[0]}`
+}
+
 const transformRemoveAllStyles = (d, depth) => {
 	d.style = {}
 	d.className = ""
@@ -200,9 +215,9 @@ function droneLoop(time) {
   if (Math.random() < 0.2) synth2.triggerAttackRelease("C1", "8n", time);
 
   let highNoteChance = Math.random()
-  if (highNoteChance < 0.03) {
+  if (highNoteChance < 0.02) {
 	  synth3.triggerAttackRelease("G4", "2n", time);
-  } else if (highNoteChance < 0.06) {
+  } else if (highNoteChance < 0.04) {
 	synth3.triggerAttackRelease("D4", "2n", time);
   }
 }
@@ -261,6 +276,17 @@ const onKeyDown = (evt) => {
 			// bring images back
 			recursiveApply(document, 0, adjustImageOpacity, [1])
 			break
+		case '<':
+			// fade out all elements on screen
+			recursiveApply(document, 0, adjustElementOpacity, [0])
+			// adjustDocumentOpacity(0)
+			break
+		case '>':
+			adjustDocumentOpacity(1)
+			// bring elements back
+			// recursiveApply(document, 0, adjustImageOpacity, [1])
+			recursiveApply(document, 0, adjustElementOpacity, [1])
+			break	
 		case 'w':
 			depth = 2//parseInt(Math.random() * 10) * 4 + 1
 			elt = getRandomElementAtDepth(depth)	
