@@ -46,7 +46,7 @@ const transformAddColorBackgroundImage = (d, depth) => {
 	d.style.background = "rgba(0, 0, 0, 0)"
 	// d.style.transition = "all 5s"
 	if (Math.random() < 0.5)
-		d.style['background-image'] = `url("https://media3.giphy.com/media/wa8uMtV7bmdGTGGmD7/giphy.gif")`
+		d.style['background-image'] = `url("https://media2.giphy.com/media/3o6vXRpbptjHM70EzS/giphy.gif?cid=790b761135ce86367b602418a4eb07f67cfa5597d14880e7&rid=giphy.gif")`
 	else 
 	d.style.background = `conic-gradient(from ${parseInt(new Date().getTime() % 90)}deg, ${firstColor}, ${getRandomColor(0.2)}, ${getRandomColor(0.2)}, ${firstColor})`;
 	// d.style['background-image'] = `url("https://media0.giphy.com/media/3oEduKlTiYmPPdepsk/source.gif")`
@@ -127,35 +127,82 @@ const recursiveApply = (el, depth, fn, args) => {
 
 var synth = new Tone.Synth({
 	oscillator: {
-	  type: 'triangle8'
+	  type: 'sine'
 	},
 	envelope: {
 	  attack: 2,
 	  decay: 1,
-	  sustain: 0.4,
-	  release: 8
+	  sustain: 0.8,
+	  release: 0.2
 	}
   }).toMaster()
 
   var synth2 = new Tone.Synth({
 	oscillator: {
-	  type: 'triangle8'
+	  type: 'sine8'
 	},
 	envelope: {
 	  attack: 1.2,
 	  decay: 2,
-	  sustain: 0.4,
+	  sustain: 1.2,
 	  release: 5
 	}
   }).toMaster()
 
 
-var synth3 = new Tone.Synth().toMaster()
+var synth3 = new Tone.Synth({
+	oscillator: {
+		type: 'sine'
+	  },
+	  envelope: {
+		attack: 3,
+		decay: 3.1,
+		sustain: 0.2,
+		release: 2
+	  }  
+}).toMaster()
 
-let dl = new Tone.Loop(droneLoop, "16n");
+var bell = new Tone.MetalSynth({
+	"harmonicity" : 12,
+	"resonance" : 1000,
+	"modulationIndex" : 20,
+	"envelope" : {
+		"decay" : 0.4,
+	},
+	"volume" : -15
+}).toMaster();
+// bellPart.loop = true;
+// bellPart.loopEnd = "1m";
+var conga = new Tone.MembraneSynth({
+	"pitchDecay" : 0.008,
+	"octaves" : 2,
+	"envelope" : {
+		"attack" : 0.001,
+		"decay" : 3.5,
+		"sustain" : 0.1
+	},
+	"volume" : -15
+}).toMaster();
+
+// var bellPart = new Tone.Sequence(function(time, freq){
+// 	bell.frequency.setValueAtTime(freq, time, Math.random()*0.5 + 0.5);
+// 	bell.triggerAttack(time);
+// }, [300, null, 400, null, 400, 400, null, 300, null, 400, null, 400], "8t").start(0);
+
+
+let dl = new Tone.Loop(droneLoop, "8n");
 let dStarted = false
+
 function droneLoop(time) {
-  synth.triggerAttackRelease("C2", "16n", time);
+  synth.triggerAttackRelease("A2", "8n", time);
+  if (Math.random() < 0.2) synth2.triggerAttackRelease("C1", "8n", time);
+
+  let highNoteChance = Math.random()
+  if (highNoteChance < 0.03) {
+	  synth3.triggerAttackRelease("G4", "2n", time);
+  } else if (highNoteChance < 0.06) {
+	synth3.triggerAttackRelease("D4", "2n", time);
+  }
 }
 
 const onKeyDown = (evt) => {
@@ -164,18 +211,20 @@ const onKeyDown = (evt) => {
 	// Tone.Transport.stop();
 	// dl.stop();  
 
+	// Start background sound
+
 	if (!dStarted) {
 		Tone.Transport.start();
 		dl.start();  
 		dStarted = true	
 	}
 
-	synth2.triggerAttackRelease(evt.key.charCodeAt() * 3 - evt.key.charCodeAt() * 3 % 55, '4n')
+	// Start regular keydown sounds
 
-	// var synth2 = new Tone.MetalSynth().toMaster()
-	// synth2.triggerAttackRelease(evt.key.charCodeAt() * 2 - evt.key.charCodeAt() * 2 % 33, '4n')
+	let val = evt.key.charCodeAt() * 5 + parseInt(Math.random() * 100)
+	conga.triggerAttackRelease(val - val % 130 + 65, 6)
+	// synth3.triggerAttackRelease(evt.key.charCodeAt() * 1 - evt.key.charCodeAt() * 1 % 55, 6)
 
-	synth3.triggerAttackRelease(evt.key.charCodeAt() * 1 - evt.key.charCodeAt() * 1 % 55, '2n')
 
 	// buildDomHierarchy()
 	let depth, elt
@@ -262,8 +311,8 @@ const getRandomElementAtDepth = (d) => {
 }
 
 setTimeout(function(){
-	alert("Get out while you can!")
+	alert("This is The Liberation!")
 	//chrome.runtime.sendMessage({timeUp: true})
 	buildDomHierarchy()
 	$(document).keydown(onKeyDown)
-}, 2000)
+}, 500)
