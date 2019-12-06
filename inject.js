@@ -1,7 +1,9 @@
 let domTree = {}
 
 const getRandomColor = (optA) => {
-	let r = parseInt(Math.random() * 255), g = parseInt(Math.random() * 255), b = parseInt(Math.random() * 255)
+	let r = parseInt(Math.random() * 55) + 75
+	let g = parseInt(Math.random() * 55) + 150
+	let b = parseInt(Math.random() * 55) + 200
 	let a = optA || 1
 	return `rgba(${r}, ${g}, ${b}, ${a})`
 }
